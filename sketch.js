@@ -1,29 +1,67 @@
-var box1,box2,box3
-var box4,box5,box6,box7
+const Engine = Matter.Engine;
+const World= Matter.World;
+const Bodies = Matter.Bodies;
+const Constraint = Matter.Constraint;
 
-function setup() {
-  createCanvas(800,400);
-  createSprite(400, 200, 50, 50);
+var engine, world;
+var box1, pig1,pig3;
+var backgroundImg,platform;
+var launcher, slingshot;
+
+ var gamestate = "onsling"
+
+function preload() {
+ // backgroundImg = loadImage("sprites/bg.png");
 }
 
-function draw() {
-  background(255,255,255);  
-  drawSprites();
+function setup(){
+    var canvas = createCanvas(1200,400);
+    engine = Engine.create();
+    world = engine.world;
+
+
+    ground = new Ground(600,height,1200,20);
+    platform = new Ground(350, 305, 300, 20);
+
+    box1 = new Box(320,280,70,70);
+    box2 = new Box(400,280,70,70);
+    box3 = new Box(320,240,70,70);
+    box4 = new Box(400,240,70,70);
+    box5 = new Box(320,160,70,70);
+    box6 = new Box(400,160,70,70);
+    launcher = new Box(200,50);
+    slingshot = new SlingShot(launcher.body,{x:200, y:50});
 }
 
-box1 = new Box (330,335,30,40);
-box2 = new Box (360,335,30,40);
-box3 = new Box (390,335,30,40);
-box4 = new Box (420,335,30,40);
-box5 = new Box (450,335,30,40);
-box6 = new Box (480,335,30,40);
-box7 = new Box (510,335,30,40);
+function draw(){
+    background(255);
+    Engine.update(engine);
+    //strokeWeight(4);
+    box1.display();
+    box2.display();
+    ground.display();
+    box3.display();
+    box4.display();
+    box5.display();
+    box5.display();
+    launcher.display();
+    platform.display();
+    slingshot.display();    
+}
 
+function mouseDragged(){
+    if (gamestate!=="launched"){
+    Matter.Body.setPosition(launcher.body, {x: mouseX , y: mouseY});
+    } 
+}
 
-box1.display()
-box2.display()
-box3.display()
-box4.display()
-box5.display()
-box6.display()
-box7.display()
+function mouseReleased(){
+    slingshot.fly();
+   gamestate = "launched" 
+}
+
+function keyPressed(){
+    if(keyCode === 32){
+    slingshot.attach(launcher.body);
+    }
+}
